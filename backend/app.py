@@ -8,22 +8,31 @@ import json
 app = Flask(__name__, static_folder="../public")
 cors = CORS(app)
 
-with open('jsons/routes.json') as file:
+#handle backend routes
+with open('jsons/routes/backend.json') as file:
     routes = json.load(file)
     for route in routes:
         endpoints = route['endpoint']
         if not isinstance(endpoints, list):
             endpoints = [endpoints]
         for endpoint in endpoints:
-            print(route['controller'])
-            print(route['action'])
             controller = eval(route['controller'])
             handler = getattr(controller , route["action"])
             methods = route["methods"]
             app.add_url_rule(endpoint, route['name'], handler, methods=methods)
+
+#handle frontend routes
+with open('jsons/routes/frontend.json') as file:
+    routes = json.load(file)
+    for route in routes:
+        endpoints = route['endpoint']
+        if not isinstance(endpoints, list):
+            endpoints = [endpoints]
+        for endpoint in endpoints:
+            handler = StaticFileController.index
+            app.add_url_rule(endpoint, 'index', handler, methods=["GET"])
         
      
 if __name__ == "__main__":
-    print app.static_url_path
     app.run(host="localhost", port=3001, debug=True)
 

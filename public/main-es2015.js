@@ -32,7 +32,7 @@ webpackEmptyAsyncContext.id = "./$$_lazy_route_resource lazy recursive";
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<h1>Angular Router</h1>\n<nav>\n  <a routerLink=\"/crisis-center\" routerLinkActive=\"active\">Crisis Center</a>\n  <a routerLink=\"/heroes\" routerLinkActive=\"active\">Heroes</a>\n</nav>\n<router-outlet></router-outlet>");
+/* harmony default export */ __webpack_exports__["default"] = ("<h1>Angular Router</h1>\n<nav>\n  <a routerLink=\"/crisis-center\" routerLinkActive=\"active\">Crisis eeCenter</a>\n  <a routerLink=\"/heroes\" routerLinkActive=\"active\">Heroes</a>\n</nav>\n<router-outlet></router-outlet>");
 
 /***/ }),
 
@@ -507,7 +507,7 @@ Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_1__["platformB
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/matej/web/angular-blog/src/main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! /home/matej/web/ngBlog/src/main.ts */"./src/main.ts");
 
 
 /***/ })

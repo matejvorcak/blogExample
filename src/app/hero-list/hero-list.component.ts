@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import data from 'jsons/routes.json';
 
 @Component({
   selector: 'app-hero-list',
@@ -11,7 +10,6 @@ export class HeroListComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-      console.log(data);
   }
 
 }

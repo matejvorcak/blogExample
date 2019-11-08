@@ -1,12 +1,5 @@
 [
     {
-        "endpoint": "/",
-        "name": "home",
-        "methods": ["GET"],
-        "controller": "StaticFileController",
-        "action": "index"
-    },
-    {
         "endpoint": "/style/<string:filename>",
         "name": "style",
         "methods": ["GET"],

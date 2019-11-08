@@ -1,0 +1,8 @@
+[
+    {
+        "endpoint": "/"
+    },
+    {
+        "endpoint": ["/heroes", "/crisis-center"]
+    }
+]
