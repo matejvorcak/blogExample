@@ -1,0 +1,39 @@
+[
+    {
+        "endpoint": "/",
+        "name": "home",
+        "methods": ["GET"],
+        "controller": "StaticFileController",
+        "action": "index"
+    },
+    {
+        "endpoint": "/style/<string:filename>",
+        "name": "style",
+        "methods": ["GET"],
+        "controller": "StaticFileController",
+        "action": "getStyleFile"
+    },
+    {
+        "endpoint": "/js/<string:filename>",
+        "name": "js",
+        "methods": [
+            "GET"
+        ],
+        "controller": "StaticFileController",
+        "action": "getJavascriptFile"
+    },
+    {
+        "endpoint": ["/api/", "/api/<string:name>"],
+        "name": "me",
+        "methods": ["GET"],
+        "controller": "HomeController",
+        "action": "index"
+    },
+    {
+        "endpoint": "/api/article",
+        "name": "article",
+        "methods": ["GET"],
+        "controller": "ArticleController",
+        "action": "index"
+    }
+]
