@@ -1,6 +1,6 @@
 [
     {
-        "endpoint": "/style/<string:filename>",
+        "endpoint": "/css/<string:filename>",
         "name": "style",
         "methods": ["GET"],
         "controller": "StaticFileController",
@@ -9,9 +9,7 @@
     {
         "endpoint": "/js/<string:filename>",
         "name": "js",
-        "methods": [
-            "GET"
-        ],
+        "methods": ["GET"],
         "controller": "StaticFileController",
         "action": "getJavascriptFile"
     },

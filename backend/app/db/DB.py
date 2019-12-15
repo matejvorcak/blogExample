@@ -9,7 +9,7 @@ class DB:
     conn = None
     affectedRows = 0
 
-    with open('jsons/config.json') as file:
+    with open('jsons/config/backend.json') as file:
         config = json.load(file)
         host = config["database"]["host"]
         database = config["database"]["database"]
