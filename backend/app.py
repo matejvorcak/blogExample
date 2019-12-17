@@ -5,7 +5,7 @@ from app.controllers.StaticFileController import StaticFileController
 from flask_cors import CORS
 import json
 
-app = Flask(__name__, static_folder="../public")
+app = Flask(__name__, static_folder="../public/static")
 cors = CORS(app)
 
 #handle backend routes

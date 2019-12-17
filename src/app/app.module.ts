@@ -8,7 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { CrisisListComponent } from './components/crisis-list/crisis-list.component';
 import { HeroListComponent } from './components/hero-list/hero-list.component';
-import { AuthDialogComponet , LoginDialog } from "./components/auth-dialog/auth-dialog.component"
+import { AuthDialogComponet, LoginDialogComponent, RegisterDialogComponent, AuthFormsComponent } from "./components/auth-dialog/auth-dialog.component";
 import { DemoMaterialModule } from './material.module';
 
 const appRoutes: Routes = [
@@ -36,9 +36,11 @@ const appRoutes: Routes = [
     HeroListComponent,
     CrisisListComponent,
     AuthDialogComponet,
-    LoginDialog
+    AuthFormsComponent,
+    LoginDialogComponent,
+    RegisterDialogComponent,
   ],
-  entryComponents: [ LoginDialog],
+  entryComponents: [LoginDialogComponent, RegisterDialogComponent, AuthFormsComponent ],
   bootstrap: [AppComponent],
   providers: []
 })

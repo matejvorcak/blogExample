@@ -1,11 +1,13 @@
-<h1 mat-dialog-title>LOGIN</h1>
-<div>
-    <mat-form-field>
-        <input matInput placeholder="USERNAME">
-    </mat-form-field>
+<ng-template [ngIf]=isVisible>
+    <h1 mat-dialog-title>Login</h1>
+    <div>
+        <mat-form-field>
+            <input matInput placeholder="login">
+        </mat-form-field>
 
-    <mat-form-field>
-        <input matInput placeholder="Password">
-    </mat-form-field>
-    <button mat-raised-button color="primary">Login</button>
-</div>
+        <mat-form-field>
+            <input matInput placeholder="password">
+        </mat-form-field>
+        <button mat-raised-button color="primary">Login</button>
+    </div>
+</ng-template>
