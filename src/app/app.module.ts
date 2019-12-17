@@ -11,7 +11,6 @@ import { HeroListComponent } from './components/hero-list/hero-list.component';
 import { AuthDialogComponet , LoginDialog } from "./components/auth-dialog/auth-dialog.component"
 import { DemoMaterialModule } from './material.module';
 
-
 const appRoutes: Routes = [
   { path: 'crisis-center', component: CrisisListComponent },
   { path: 'heroes', component: HeroListComponent },

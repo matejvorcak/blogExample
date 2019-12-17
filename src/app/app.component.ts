@@ -2,6 +2,7 @@ import { Component, TemplateRef } from '@angular/core';
 import { BsModalService } from 'ngx-foundation/modal';
 import { BsModalRef } from 'ngx-foundation/modal/bs-modal-ref.service';
 
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -9,9 +10,11 @@ import { BsModalRef } from 'ngx-foundation/modal/bs-modal-ref.service';
 })
 export class AppComponent {
   modalRef: BsModalRef;
-  title = 'angular-blog';
+  title = "Titlde";
 
-  constructor(private modalService: BsModalService) { }
+  constructor(private modalService: BsModalService) { 
+    
+  }
 
   openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template, { class: 'tiny' });
