@@ -10,6 +10,12 @@ export class LoggedUser extends User {
         return this.api_token? true : false
     }
 
+    destroy(){
+        for (let key in this) {
+            this[key] = null
+        }
+    }
+
     constructor(){
         
         super({})

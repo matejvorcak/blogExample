@@ -1,10 +1,9 @@
 import base64
 import hashlib
 import json
-import time
 import secrets
+import time
 from exceptions import *
-
 from functions import randomString
 
 from .Model import Model
@@ -12,7 +11,7 @@ from .Model import Model
 
 class User(Model):
 
-    Model.columns = ["id","username", "first_name", "last_name", "password", "salt", "api_key", "created_at", "last_login"]
+    Model.columns = ["id","username", "email", "first_name", "last_name", "password", "salt", "api_key", "created_at", "last_login"]
     private_columns = ["id", "salt","api_key","password"]
     Model.tableName = "USERS"
 
@@ -30,7 +29,10 @@ class User(Model):
 
     @staticmethod
     def login( login, password):
-        fetch_user = User.getWhere("email = '{login}' OR username = '{login}'".format(login = login))
+        try :
+            fetch_user = User.getWhere("email = '{login}' OR username = '{login}'".format(login = login))
+        except EmptyResultException :
+            return False, {"login": "login is wrong"}
         fetch_password = fetch_user.password
         pw = hashlib.sha1(str(password + fetch_user.salt).encode("UTF-8")).hexdigest()
         if pw == fetch_password:
@@ -38,31 +40,37 @@ class User(Model):
             fetch_user.api_key = db_api_key
             fetch_user.last_login = time.strftime('%Y-%m-%d %H:%M:%S')
             fetch_user.save()
-            return fetch_user
+            return True, fetch_user
         else:
-            raise BadCredentialsException
+            return False, {"password": "password is wrong"}
             
 
-    @staticmethod
+    @staticmethod   
     def register(email, username ,password):
-        try:
-            User.getWhere("email = '{}' OR username = '{}'".format(email, username))
-            raise UserAlreadyRegisteredException
-        except EmptyResultException :
-            db_salt = randomString(stringLength=6, withNumbers=True)
-            db_email = email
-            db_username = username
-            db_password = hashlib.sha1(str(password + db_salt).encode("UTF-8")).hexdigest()
-            newUser = User(salt=db_salt, 
-                username=db_username, 
-                password=db_password, 
-                email=db_email, 
-                last_login=time.strftime('%Y-%m-%d %H:%M:%S'),
-                created_at=time.strftime('%Y-%m-%d %H:%M:%S')
-            )
-            newUser.save()
-            user = User.login(email, password)
-            return True, user
+        credentialsCheck = User.query('SELECT MAX(username=%s) AS isTakenUsername, MAX(email=%s) AS isTakenEmail FROM USERS',(username, email)).getOne()
+        errors = {}
+        if bool(credentialsCheck["isTakenUsername"]):
+            errors["username"] = "username is taken."
+        if bool(credentialsCheck["isTakenEmail"]):
+            errors["email"] = "email is taken."
+        if len(errors) > 0 :
+            return False, errors
+  
+        db_salt = randomString(stringLength=6, withNumbers=True)
+        db_email = email
+        db_username = username
+        db_password = hashlib.sha1(str(password + db_salt).encode("UTF-8")).hexdigest()
+        newUser = User(
+            salt=db_salt, 
+            username=db_username, 
+            password=db_password, 
+            email=db_email, 
+            last_login=time.strftime('%Y-%m-%d %H:%M:%S'),
+            created_at=time.strftime('%Y-%m-%d %H:%M:%S')
+        )
+        newUser.save()
+        user = User.login(email, password)
+        return True, user
 
     @staticmethod
     def decode_api_token(api_token):

@@ -1,11 +1,23 @@
 class EmptyResultException(Exception):
-    pass
+    def __init__(self):
+         super().__init__("Query return empty result.")
 
 class UserNotFoundException(Exception):
-    pass
+    def __init__(self):
+         super().__init__("User not found.")
 
 class UserAlreadyRegisteredException(Exception):
-    pass
+    def __init__(self):
+         super().__init__("User with this credentials exists.")
 
 class BadCredentialsException(Exception): 
-    pass
+    def __init__(self):
+         super().__init__("Credentials don`t match any user.")
+
+class UsernameAlreadyUsedException(Exception):
+    def __init__(self):
+         super().__init__("Username is already used, please try another.")
+
+class EmailAlradyUsedException(Exception):
+    def __init__(self):
+         super().__init__("Email is already used, please try another.")

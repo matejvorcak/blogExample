@@ -1,9 +1,11 @@
-import { ErrorStateMatcher } from '@angular/material/core';
 import { FormGroup, FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { Component, Inject, Input, Output, OnInit, EventEmitter } from '@angular/core';
 import { MatDialog ,MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AuthService } from "../../services/auth.service";
 import { LoggedUser } from 'src/app/classes/LoggedUser';
+import { equalPassValidator } from "src/app/validators"
+import { ConfirmPasswordEStateMatcher, SubmittedErrorMatcher} from "src/app/error-matchers";
+import { ServerSideError } from 'src/app/errors';
 
 
 @Component({
@@ -80,10 +82,6 @@ export class LoginDialogComponent implements OnInit {
   @Input("isVisible") isVisible: boolean;
   @Output() logged = new EventEmitter<boolean>();
 
-  isDisabled(): boolean {
-    return this.loginForm.status == "INVALID" 
-  }
-
   ngOnInit(): void {
     this.loginForm = new FormGroup({
       'login': new FormControl('', Validators.required ),
@@ -97,18 +95,40 @@ export class LoginDialogComponent implements OnInit {
   constructor(public authService: AuthService, public loggedUser: LoggedUser) {}
 
   async login(){
-    let res = await this.authService.login(
-      this.loginForm.get('login').value, 
-      this.loginForm.get('password').value
-    )
+    this.loginForm.markAllAsTouched()
+    
+    if(!this.loginForm.valid)
+      return
 
-    if(res["errors"]){
-      
-    } else {
+    try {
+      let res = await this.authService.login(
+        this.loginForm.get('login').value,
+        this.loginForm.get('password').value
+      )
       this.logged.emit(true)
-    }
-  }  
+    } catch ( err) {
+      
+      if(err instanceof ServerSideError){  
+        let errors = err.errors
+        Object.keys(errors).forEach(prop => {
+          const formControl = this.loginForm.get(prop);
+          if (formControl) {
+            // activate the error message
+            formControl.setErrors({
+              serverError: errors[prop]
+            });
+          }
 
+        });
+      }
+    }  
+    
+
+    
+      
+    
+  }  
+  
 }
 
 @Component({
@@ -117,20 +137,11 @@ export class LoginDialogComponent implements OnInit {
 })
 export class RegisterDialogComponent implements OnInit {
   registerForm : FormGroup
-  matcher = new MyErrorStateMatcher();
+  matcher = new SubmittedErrorMatcher()
+  confirmPasswordMatcher = new ConfirmPasswordEStateMatcher()
+  submitted: boolean = false
   @Input("isVisible") isVisible: boolean;
   @Output() registered = new EventEmitter<void>();
-
-  isDisabled() : boolean {
-    return this.registerForm.status == "INVALID"
-  }
-
-  
-  checkPasswords(group: FormGroup) { // here we have the 'passwords' group
-    let pass = group.get('password').value;
-    let confirmPass = group.get('confirm_password').value;
-    return pass === confirmPass ? null : { notSame: true }
-  }
 
   ngOnInit(): void {
 
@@ -146,35 +157,48 @@ export class RegisterDialogComponent implements OnInit {
         Validators.required,
         Validators.minLength(6)
       ]),
-      'confirm_password': new FormControl('')
-    }, {validators: this.checkPasswords})
+      'confirm_password': new FormControl('', [equalPassValidator('password')])
+    })
 
   } 
   constructor(public authService: AuthService, public loggedUser: LoggedUser) { 
-
+    
   }
 
   async register() {
-    const res = await this.authService.register(
-      this.registerForm.get('email').value,
-      this.registerForm.get('username').value,
-      this.registerForm.get('password').value,
-    )
-    if (res["errors"]) {
-
-    } else {
-      this.registered.emit()
+    this.submitted = true
+    this.registerForm.controls.confirm_password.updateValueAndValidity()
+    this.registerForm.markAllAsTouched()
+    if(this.registerForm.valid){
+      const res = await this.authService.register(
+        this.registerForm.get('email').value,
+        this.registerForm.get('username').value,
+        this.registerForm.get('password').value,
+      )
+      if (res["status"]== "ERROR") {
+        let errors = res['errors']
+        Object.keys(errors).forEach(prop => {
+          const formControl = this.registerForm.get(prop);
+          if (formControl) {
+            // activate the error message
+            formControl.setErrors({
+              serverError: errors[prop]
+            });
+          }
+          
+        });
+        
+      } else {
+        //login new user
+        let res = await this.authService.login(
+          this.registerForm.get('username').value,
+          this.registerForm.get('password').value,
+        )
+        this.registered.emit()
+      }
     }
   }
 
-}
+} 
 
 
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const invalidCtrl = !!(control && control.invalid && control.parent.dirty);
-    const invalidParent = !!(control && control.parent && control.parent.invalid && control.parent.dirty);
-
-    return (invalidCtrl || invalidParent);
-  }
-}

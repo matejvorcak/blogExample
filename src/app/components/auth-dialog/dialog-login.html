@@ -5,19 +5,24 @@
             <input  matInput formControlName="login" [(ngModel)]="inputLogin">
             <mat-hint>Use e-mail or username</mat-hint>
             <mat-error *ngIf="loginForm.get('login').invalid && (loginForm.get('login').dirty || loginForm.get('login').touched)">
-                <span>login is required</span>
+                <span *ngIf="loginForm.get('login').errors?.required">login is required</span>
+                <span *ngIf="loginForm.get('login').errors?.serverError">
+                    {{ loginForm.get('login').errors?.serverError }}
+                </span>
             </mat-error>
         </mat-form-field>
 
         <mat-form-field class="full-width">
             <input type="password" matInput formControlName="password"  placeholder="password" [(ngModel)]="inputPassword">
             <mat-error *ngIf="loginForm.get('password').invalid && (loginForm.get('password').dirty || loginForm.get('password').touched)">
-                <span *ngIf="!loginForm.get('password').hasError('minLength') && !this.loginForm.get('password').hasError('required')">min. length is 6</span>
-                <span *ngIf="this.loginForm.get('password').hasError('required') && !loginForm.get('password').hasError('minLength')">password is required</span>
+                <span *ngIf="loginForm.get('password').errors?.minLength">min. length is 6</span>
+                <span *ngIf="loginForm.get('password').hasError('required') && !loginForm.get('password').hasError('minLength')">password is required</span>
+                <span *ngIf="loginForm.get('password').errors?.serverError">
+                    {{ loginForm.get('password').errors?.serverError }}
+                </span>
             </mat-error>
         </mat-form-field>
         <button class="full-width"
-                [disabled]="isDisabled()"
                 mat-raised-button
                 (click)="login()" 
                 color="primary">    

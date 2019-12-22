@@ -1,8 +1,8 @@
 import base64
 import datetime
 import json
-from exceptions import (BadCredentialsException, EmptyResultException,
-                        UserAlreadyRegisteredException, UserNotFoundException)
+from exceptions import *
+from app.controllers.Controller import Controller
 
 from flask import Response, request
 from flask.helpers import make_response
@@ -11,7 +11,7 @@ from ..models.Model import Model
 from ..models.User import User
 
 
-class UserController:
+class UserController(Controller):
     @staticmethod
     def me():
         try:
@@ -30,29 +30,36 @@ class UserController:
 
     @staticmethod
     def login():
-        try:
             login = request.form['login']
             password = request.form['password']
-            user = User.login(login,password)
-            api_token = base64.b64encode(
-                bytes(user.salt + str(user.id) + user.api_key, 'ascii'))
-            user.api_token = api_token            
-            response = make_response(user.toJSON())
-            return response
-        except (EmptyResultException, UserNotFoundException) :
-            return {"errors": [{"error": "login_error" ,"message": "User not found"}]}, 200, {'Content-Type': 'application/json'}
-        except (BadCredentialsException) : 
-            return {"errors": [{"error": "login_error", "message": "Bad credentials"}]}, 200, {'Content-Type': 'application/json'}
-
+            success, res = User.login(login,password)
+            if success :
+                api_token = base64.b64encode(
+                    bytes(res.salt + str(res.id) + res.api_key, 'ascii'))
+                res.api_token = api_token            
+                return {
+                    "status": "SUCCESS",
+                    "data": res.toJSON()
+                }
+            else :
+                return {
+                    "status": "ERROR",
+                    "errors": res
+                }
+    
     @staticmethod
     def register():
-        try:
-            email = request.form['email']
-            password = request.form['password']
-            username = request.form['username']
-            success, user = User.register(email, username ,password)
-            return user.toJSON()
-        except EmptyResultException:
-            return {"errors": [{"error": "register_error", "message": "User not found"}]}, 200, {'Content-Type': 'application/json'}
-        except UserAlreadyRegisteredException:
-            return {"errors": [{"error": "register_error", "message": "Email or username is already used"}]}, 200, {'Content-Type': 'application/json'}
+        email = request.form['email']
+        password = request.form['password']
+        username = request.form['username']
+        success, res = User.register(email, username ,password)
+        if success:
+            return {
+                "status": "SUCCESS",
+                "data": res.toJSON()
+            }
+        else:
+            return {
+                "status": "ERROR",
+                "errors": res
+            }

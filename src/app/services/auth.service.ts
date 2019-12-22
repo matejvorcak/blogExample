@@ -3,6 +3,7 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { environment } from "../../environments/environment";
 import { LoggedUser } from '../classes/LoggedUser';
 import { CookieService } from "ngx-cookie-service";
+import { ServerSideError } from "src/app/errors";
 
 @Injectable({
   providedIn: 'root'
@@ -28,37 +29,38 @@ export class AuthService {
 
     let res = await this.http.post(this.loginUrl, 
       bodyFormData).toPromise()
-      if(res["errors"]){
-        return res
+      if(res["status"]=="ERROR"){
+        throw new ServerSideError(res["errors"])
       } else {
-        this.loggedUser.setUser(res)
-        this.cookieService.set("api_token_ang", this.loggedUser.api_token, (1/24))
-        return this.loggedUser
+        this.loggedUser.setUser(res["data"])
+        this.cookieService.set("api_token", this.loggedUser.api_token, (1/24))
     }
   }
 
   async me() {
-    alert(this.userInfoUrl)
-    if(this.cookieService.check("api_token_ang")){
+    if(this.cookieService.check("api_token")){
       const httpOptions = {
         headers: new HttpHeaders({
-          'Content-Type': 'multipart/form-data',
-          'Authorization': this.cookieService.get("api_token_ang") ,
-          'Access-Control-Allow-Credentials': 'true'
+          'Authorization': this.cookieService.get("api_token")
         })
       };
       let res = await this.http.get(this.userInfoUrl, { headers: httpOptions.headers, withCredentials: true}).toPromise()
+
       if (res["errors"]) {
         return res
       } else {
         this.loggedUser.setUser(res)
+        this.loggedUser.api_token = this.cookieService.get("api_token")
         return this.loggedUser
       }
     }
   }
 
   async logout() {
-
+    if (this.cookieService.check("api_token")) {
+      this.cookieService.delete("api_token")
+    }
+    this.loggedUser.destroy()
   }
 
   async register(email, username, password) {
