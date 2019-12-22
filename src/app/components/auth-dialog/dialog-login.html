@@ -1,13 +1,30 @@
 <ng-template [ngIf]=isVisible>
     <h1 mat-dialog-title>Login</h1>
-    <div>
-        <mat-form-field>
-            <input matInput placeholder="login">
+    <form [formGroup]="loginForm">
+        <mat-form-field class="full-width">
+            <input  matInput formControlName="login" [(ngModel)]="inputLogin">
+            <mat-hint>Use e-mail or username</mat-hint>
+            <mat-error *ngIf="loginForm.get('login').invalid && (loginForm.get('login').dirty || loginForm.get('login').touched)">
+                <span>login is required</span>
+            </mat-error>
         </mat-form-field>
 
-        <mat-form-field>
-            <input matInput placeholder="password">
+        <mat-form-field class="full-width">
+            <input type="password" matInput formControlName="password"  placeholder="password" [(ngModel)]="inputPassword">
+            <mat-error *ngIf="loginForm.get('password').invalid && (loginForm.get('password').dirty || loginForm.get('password').touched)">
+                <span *ngIf="!loginForm.get('password').hasError('minLength') && !this.loginForm.get('password').hasError('required')">min. length is 6</span>
+                <span *ngIf="this.loginForm.get('password').hasError('required') && !loginForm.get('password').hasError('minLength')">password is required</span>
+            </mat-error>
         </mat-form-field>
-        <button mat-raised-button color="primary">Login</button>
-    </div>
+        <button class="full-width"
+                [disabled]="isDisabled()"
+                mat-raised-button
+                (click)="login()" 
+                color="primary">    
+            Login
+        </button>
+    </form>
 </ng-template>
+
+
+

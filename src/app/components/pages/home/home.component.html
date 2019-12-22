@@ -1,0 +1,13 @@
+<div fxLayout="row" class="container">
+  <div fxFlex="70">
+    <h1>Novinky</h1>
+    <div fxLayoutGap="10px grid">
+      <div *ngFor="let new of news" fxFlex="25">
+        <app-news ></app-news>  
+      </div>
+    </div>
+  </div>
+  <div fxFlex="30">
+    <h1>Sidebar</h1>
+  </div>
+</div>

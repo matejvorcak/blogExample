@@ -1,6 +1,6 @@
 import json
-import mysql.connector
-from mysql.connector import Error
+import pymysql
+import pymysql.cursors
 
 
 class DB:
@@ -18,12 +18,13 @@ class DB:
 
     def __init__(self):
         try:
-            connection = mysql.connector.connect(host=self.host, database=self.database, user=self.user, password=self.password)
+            connection = pymysql.connect(
+                host=self.host, database=self.database, user=self.user, password=self.password, cursorclass=pymysql.cursors.DictCursor)
 
-            if connection.is_connected():
-                self.conn = connection
-                self.db_Info = connection.get_server_info()
-                self.cursor = connection.cursor(buffered=True, dictionary=True)
+            
+            self.conn = connection
+            self.db_Info = connection.get_server_info()
+            self.cursor = connection.cursor()
 
         except Error as e:
             print("Error while connecting to MySQL", e)

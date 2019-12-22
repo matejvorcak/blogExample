@@ -14,11 +14,11 @@
         "action": "getJavascriptFile"
     },
     {
-        "endpoint": ["/api/", "/api/<string:name>"],
+        "endpoint": "/api/me",
         "name": "me",
         "methods": ["GET"],
-        "controller": "HomeController",
-        "action": "index"
+        "controller": "UserController",
+        "action": "me"
     },
     {
         "endpoint": "/api/article",
@@ -26,5 +26,19 @@
         "methods": ["GET"],
         "controller": "ArticleController",
         "action": "index"
+    },
+    {
+        "endpoint": "/api/login",
+        "name": "login",
+        "methods": ["POST"],
+        "controller": "UserController",
+        "action": "login"
+    },
+    {
+        "endpoint": "/api/register",
+        "name": "register",
+        "methods": ["POST"],
+        "controller": "UserController",
+        "action": "register"
     }
 ]

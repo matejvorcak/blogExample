@@ -1,0 +1,32 @@
+<div class="container">
+  <button routerLink="/" routerLinkActive="active" mat-button >Home</button>
+  
+  <button mat-button [matMenuTriggerFor]="kontakt">Kontakt</button>
+  <mat-menu #kontakt="matMenu" yPosition="below">
+    <button mat-menu-item>Item 1</button>
+    <button mat-menu-item>Item 2</button>
+  </mat-menu>
+  
+  <button mat-button [matMenuTriggerFor]="beforeMenu">Before</button>
+  <mat-menu #beforeMenu="matMenu" xPosition="before">
+    <button mat-menu-item>Item 1</button>
+    <button mat-menu-item>Item 2</button>
+  </mat-menu>
+  
+  
+  <button mat-button [matMenuTriggerFor]="afterMenu">After</button>
+  <mat-menu #afterMenu="matMenu" xPosition="after">
+    <button mat-menu-item>Item 1</button>
+    <button mat-menu-item>Item 2</button>
+  </mat-menu>
+
+  <app-auth-dialog *ngIf="!loggedUser.isLogged()" ></app-auth-dialog>
+
+  <button *ngIf="loggedUser.isLogged()" mat-button [matMenuTriggerFor]="userMenu">
+    <div mat-card-avatar color="primary" class="user-avatar" [ngStyle]='{"background" : "url(\"" + loggedUser.image+"\")"}'></div>{{loggedUser.username}}
+  </button>
+  <mat-menu #userMenu="matMenu" xPosition="before">
+    <button (click)="me()" mat-menu-item>My user card</button>
+    <button (click)="logout()" mat-menu-item>Logout</button> 
+  </mat-menu>
+</div>
