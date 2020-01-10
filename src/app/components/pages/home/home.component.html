@@ -5,6 +5,7 @@
       <div *ngFor="let new of news" fxFlex="25">
         <app-news ></app-news>  
       </div>
+      <button (click)=(createNews()) mat-fab>+</button>
     </div>
   </div>
   <div fxFlex="30">

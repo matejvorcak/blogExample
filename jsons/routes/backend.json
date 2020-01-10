@@ -21,11 +21,18 @@
         "action": "me"
     },
     {
-        "endpoint": "/api/article",
-        "name": "article",
+        "endpoint": "/api/news",
+        "name": "news.load",
         "methods": ["GET"],
         "controller": "ArticleController",
-        "action": "index"
+        "action": "load_news"
+    },
+    {
+        "endpoint": "/api/news",
+        "name": "news.create.update",
+        "methods": ["POST"],
+        "controller": "ArticleController",
+        "action": "load_news"
     },
     {
         "endpoint": "/api/login",

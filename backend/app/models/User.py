@@ -4,18 +4,20 @@ import json
 import secrets
 import time
 from exceptions import *
+
 from functions import randomString
 
 from .Model import Model
-
+from .File import File
 
 class User(Model):
 
-    Model.columns = ["id","username", "email", "first_name", "last_name", "password", "salt", "api_key", "created_at", "last_login"]
-    private_columns = ["id", "salt","api_key","password"]
-    Model.tableName = "USERS"
+    columns = ["id", "username", "email", "first_name", "last_name",
+               "password", "salt", "api_key", "created_at", "last_login", "avatar"]
+    private_columns = ["id", "salt", "api_key", "password", "avatar"]
+    tableName = "USERS"
 
-    def __init__(self, id=None, username=None, email=None, first_name=None, last_name=None, password=None, salt=None, api_key=None, created_at=None, last_login=""):
+    def __init__(self, id=None, username=None, email=None, first_name=None, last_name=None, password=None, salt=None, api_key=None, created_at=None, last_login="", avatar=None):
         self.id = id
         self.email = email
         self.username = username
@@ -26,6 +28,24 @@ class User(Model):
         self.created_at = created_at
         self.last_login = last_login
         self.api_key = api_key
+        try:
+            self.avatar = File.get(avatar).get_filename()
+        except EmptyResultException :
+            self.avatar = None
+
+    @classmethod
+    def getWhere(cls, cond): 
+        ret = super(User, cls).getWhere(cond)    
+        filename = File.get(ret.avatar).get_filename()
+        setattr(ret,'_avatar',filename)
+        return ret
+
+    @classmethod
+    def get(cls, id):
+        ret = super(Model, cls).get(id)
+        filename = File.get(ret.avatar).get_filename()
+        setattr(ret, '_avatar', filename)
+        return ret
 
     @staticmethod
     def login( login, password):
@@ -69,7 +89,7 @@ class User(Model):
             created_at=time.strftime('%Y-%m-%d %H:%M:%S')
         )
         newUser.save()
-        user = User.login(email, password)
+        succes ,user = User.login(email, password)
         return True, user
 
     @staticmethod
@@ -97,3 +117,6 @@ class User(Model):
     def update(self, values):
         User.query("UPDATE {table} SET {values} WHERE id={user_id}".format(
                 table=User.tableName, values=values, user_id = self.id))
+
+    def get_avatar_path(self):
+        return File.get(self.avatar).get_filename()

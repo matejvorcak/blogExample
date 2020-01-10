@@ -19,7 +19,9 @@ class Model:
 
     @classmethod
     def get(cls, id):
-        result = Model.query("SELECT " + (", ".join(Model.columns)) + " FROM " + Model.tableName+ " WHERE "+ Model.primaryKey +" = %s", (id,)).getOne()
+        query = "SELECT " + (", ".join(cls.columns)) + " FROM " + \
+            cls.tableName + " WHERE " + cls.primaryKey + " = %s"
+        result = Model.query("SELECT " + (", ".join(cls.columns)) + " FROM " + cls.tableName+ " WHERE "+ cls.primaryKey +" = %s", (id,)).getOne()
         if result == None:
             raise EmptyResultException
         model = cls()
@@ -29,7 +31,9 @@ class Model:
 
     @classmethod
     def getWhere(cls, cond):
-        result = Model.query("SELECT " + (", ".join(Model.columns)) + " FROM " + Model.tableName + " WHERE " + cond ).getOne()
+        query = "SELECT " + (", ".join(cls.columns)) + \
+            " FROM " + cls.tableName + " WHERE " + cond
+        result = Model.query(query).getOne()
         
         if result == None:
             raise EmptyResultException
@@ -41,6 +45,7 @@ class Model:
 
     def toJSON(self):
         return self.__dict__
+
 
     def save(self): 
 
@@ -57,7 +62,7 @@ class Model:
             cols = ", ".join(cols)
             vals = ", ".join(vals)
             Model.query("INSERT INTO {table} ({columns}) VALUES ({values})".format(
-                table=Model.tableName, columns=cols, values=vals))
+                table=self.tableName, columns=cols, values=vals))
         else :
             values = []
             for column in self.columns:
@@ -70,5 +75,5 @@ class Model:
         
             values = ", ".join(values)
             Model.query("UPDATE {table} SET {values} WHERE {primaryKey}={id}".format(
-                table=Model.tableName, values=values, primaryKey=Model.primaryKey ,id=getattr(self, self.primaryKey)))
+                table=self.tableName, values=values, primaryKey=self.primaryKey ,id=getattr(self, self.primaryKey)))
 

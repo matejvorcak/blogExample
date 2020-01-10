@@ -4,11 +4,5 @@
         "database": "pyBlog",
         "user": "root",
         "password": "Jw!9Jpwr"
-    },
-    "development": {
-        
-    },
-    "production":{
-       
     }
 }

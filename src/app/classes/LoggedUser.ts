@@ -28,6 +28,6 @@ export class LoggedUser extends User {
         this.last_login = object.last_login || null
         this.last_name = object.last_name || null
         this.username = object.username || null
-        this.image = "https://placeimg.com/40/40/people"
+        this.image = "assets/" + (object._avatar || "images/users/default_user_avatar.jpg")
     }
 }

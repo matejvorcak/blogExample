@@ -8,6 +8,23 @@ import { News } from "../../classes/News";
 })
 export class NewsComponent implements OnInit {
   @Input('news') news: News;
+
+  editMode:Boolean = false
+  editModeStyles(): Object {
+    if(this.editMode){
+      return {
+        
+      }
+    }
+    return {}
+  }
+
+  toggleEditMode(){
+    this.editMode = !this.editMode
+  }
+
+
+
   
   constructor() { }
 

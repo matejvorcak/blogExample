@@ -10,11 +10,10 @@ from flask_login import LoginManager
 
 
 from app.controllers.ArticleController import ArticleController
-from app.controllers.HomeController import HomeController
 from app.controllers.StaticFileController import StaticFileController
 from app.controllers.UserController import UserController
 
-app = Flask(__name__, static_folder="../public/static")
+app = Flask(__name__, static_folder="../public/assets")
 app.secret_key = os.urandom(16)
 cors = CORS(app, supports_credentials=True)
 app.config['SESSION_TYPE'] = 'filesystem'

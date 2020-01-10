@@ -4,8 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "linkres" : "ln -s \"$PWD/resources/assets\" \"$PWD/public/assets\"",
+    "prebuild": "rm public/assets",
     "build": "ng build --extractCss=true --",
-    "postbuild": "sed -i -e 's/src=\"/src=\"js\\//g' public/index.html",
+    "postbuild": "sed -i -e 's/src=\"/src=\"js\\//g' public/index.html && npm run linkres",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

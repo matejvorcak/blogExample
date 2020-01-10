@@ -8,10 +8,14 @@ import {News } from './../../../classes/News'
 })
 export class HomeComponent implements OnInit {
   news :News[] = [
-    {title: "title1", text: "text"},
-    {title: "title2", text: "text2"},
-    {title: "title3", text: "text3"},
+    new News("",""),
+    new News("",""),
+    new News("",""),
   ]
+
+  createNews(){
+    this.news.push(new News("",""))
+  }
 
   constructor() { }
 
